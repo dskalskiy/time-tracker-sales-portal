@@ -101,7 +101,7 @@ export function SalesPortal() {
                 <span className="text-[13px] font-semibold tracking-tight text-foreground">
                   Time Tracker
                 </span>
-                <span className="mt-0.5 text-[11px] text-muted-foreground">Портал продаж</span>
+                <span className="mt-0.5 text-[11px] text-muted-foreground">Sales Portal</span>
               </div>
             </div>
           </header>
@@ -113,7 +113,7 @@ export function SalesPortal() {
           <footer className="mt-auto hidden border-t border-border/50 lg:block">
             <div className="container mx-auto px-4 py-2 lg:px-6">
               <p className="text-center text-xs text-muted-foreground">
-                Time Tracker · Портал продаж © 2026
+                Time Tracker · Sales Portal © 2026
               </p>
             </div>
           </footer>
