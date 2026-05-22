@@ -24,8 +24,8 @@ function PortalMain() {
   }
 
   return (
-    <Tabs defaultValue="timetracker" className="space-y-3 lg:space-y-4">
-      <TabsList className="grid h-9 w-full grid-cols-3 border border-border bg-muted/60 p-0.5 sm:inline-flex sm:w-auto">
+    <Tabs defaultValue="timetracker" className="space-y-4 lg:space-y-5">
+      <TabsList className="portal-tabs-list grid h-9 w-full grid-cols-3 p-0.5 sm:inline-flex sm:w-auto">
         <TabsTrigger value="timetracker" className="gap-1.5 text-xs sm:text-sm">
           <Clock className="size-3.5 sm:size-4" />
           Тарифы
@@ -43,10 +43,10 @@ function PortalMain() {
       </TabsList>
 
       <TabsContent value="timetracker" className="mt-3 outline-none">
-        <div className="space-y-3">
-          <div className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-            <h2 className="text-base font-semibold lg:text-lg">Калькулятор тарифов</h2>
-            <p className="text-xs text-muted-foreground">
+        <div className="space-y-4">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+            <h2 className="portal-section-title text-base lg:text-lg">Калькулятор тарифов</h2>
+            <p className="portal-section-desc text-xs sm:text-[13px]">
               Расчёт стоимости подписки Time Tracker
             </p>
           </div>
@@ -55,10 +55,10 @@ function PortalMain() {
       </TabsContent>
 
       <TabsContent value="integration" className="mt-3 outline-none">
-        <div className="space-y-3">
-          <div className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-            <h2 className="text-base font-semibold lg:text-lg">Интеграция оборудования</h2>
-            <p className="text-xs text-muted-foreground">
+        <div className="space-y-4">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+            <h2 className="portal-section-title text-base lg:text-lg">Интеграция оборудования</h2>
+            <p className="portal-section-desc text-xs sm:text-[13px]">
               Расчёт стоимости ПО для интеграции
             </p>
           </div>
@@ -67,10 +67,10 @@ function PortalMain() {
       </TabsContent>
 
       <TabsContent value="equipment" className="mt-3 outline-none">
-        <div className="space-y-3">
-          <div className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-            <h2 className="text-base font-semibold lg:text-lg">Каталог оборудования</h2>
-            <p className="text-xs text-muted-foreground">
+        <div className="space-y-4">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+            <h2 className="portal-section-title text-base lg:text-lg">Каталог оборудования</h2>
+            <p className="portal-section-desc text-xs sm:text-[13px]">
               Терминалы, считыватели, контроллеры
             </p>
           </div>
@@ -85,9 +85,11 @@ export function SalesPortal() {
   return (
     <PortalGate>
       <SalesDataProvider>
-        <div className="flex min-h-screen flex-col bg-background">
-          <header className="sticky top-0 z-50 border-b border-border/80 bg-gradient-to-r from-[#2A2766]/45 via-[#15152a]/98 to-card/98 backdrop-blur-md">
-            <div className="container mx-auto flex items-center px-4 py-2 lg:px-6">
+        <div className="portal-shell flex min-h-screen flex-col">
+          <div className="portal-bg" aria-hidden />
+
+          <header className="portal-header portal-content sticky top-0 z-50">
+            <div className="container mx-auto flex items-center px-4 py-2.5 lg:px-6 lg:py-3">
               <div className="flex items-center gap-2.5 leading-none lg:gap-3">
                 <Image
                   src="/time-tracker-logo.png"
@@ -97,20 +99,18 @@ export function SalesPortal() {
                   className="h-7 w-auto shrink-0 object-contain object-left sm:h-8"
                   priority
                 />
-                <span className="text-[13px] text-muted-foreground sm:text-sm">
-                  Портал продаж
-                </span>
+                <span className="portal-header-title">Портал продаж</span>
               </div>
             </div>
           </header>
 
-          <main className="container mx-auto flex-1 px-4 py-4 lg:px-6 lg:py-5">
+          <main className="portal-content container mx-auto flex-1 px-4 py-5 lg:px-6 lg:py-6">
             <PortalMain />
           </main>
 
-          <footer className="mt-auto hidden border-t border-border/50 lg:block">
-            <div className="container mx-auto px-4 py-2 lg:px-6">
-              <p className="text-center text-xs text-muted-foreground">
+          <footer className="portal-footer portal-content mt-auto hidden lg:block">
+            <div className="container mx-auto px-4 py-2.5 lg:px-6">
+              <p className="text-center text-xs text-muted-foreground/85">
                 Time Tracker · Портал продаж © 2026
               </p>
             </div>

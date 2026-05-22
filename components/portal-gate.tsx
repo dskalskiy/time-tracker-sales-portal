@@ -20,8 +20,9 @@ export function PortalGate({ children }: { children: ReactNode }) {
 
   if (!ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-4">
-        <div className="w-full max-w-sm space-y-4 rounded-lg border border-border bg-card p-6">
+      <div className="portal-shell flex min-h-screen items-center justify-center px-4">
+        <div className="portal-bg" aria-hidden />
+        <div className="portal-auth-card portal-content w-full max-w-sm space-y-4 p-6">
           <Skeleton className="mx-auto h-8 w-32" />
           <Skeleton className="h-4 w-40 mx-auto" />
           <Skeleton className="h-9 w-full" />

@@ -116,11 +116,7 @@ function formatCurrency(value: number): string {
   return new Intl.NumberFormat('ru-RU').format(value) + ' ₸';
 }
 
-const imageBackdropClass = cn(
-  'relative',
-  'bg-gradient-to-br from-brand/35 via-brand-muted/25 to-background',
-  'before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(ellipse_at_50%_35%,rgba(255,255,255,0.08),transparent_62%)]'
-);
+const imageBackdropClass = cn('portal-image-backdrop relative');
 
 function ImagePreviewModal({
   item,
@@ -219,7 +215,7 @@ function EquipmentCard({ item }: { item: Equipment }) {
 
   return (
     <>
-      <Card className="overflow-hidden border-border shadow-sm transition-colors hover:border-primary/40">
+      <Card className="overflow-hidden transition-colors hover:border-primary/40">
         <div className="flex flex-col md:flex-row">
           {/* Image */}
           <button
@@ -372,7 +368,7 @@ export function EquipmentCatalog() {
   return (
     <div className="flex flex-col gap-4">
       {/* Search & filter — compact */}
-      <div className="flex flex-col gap-2 rounded-lg border border-border bg-card px-3 py-2 sm:flex-row sm:items-center">
+      <div className="portal-card flex flex-col gap-2 rounded-lg px-3 py-2.5 sm:flex-row sm:items-center">
         <div className="relative min-w-0 flex-1">
           <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -427,7 +423,7 @@ export function EquipmentCatalog() {
           ))}
         </div>
       ) : (
-        <Card className="border-border/50">
+        <Card>
           <CardContent className="py-12 text-center">
             <Search className="mx-auto mb-3 size-8 text-muted-foreground/50" />
             <h3 className="text-base font-semibold">Ничего не найдено</h3>

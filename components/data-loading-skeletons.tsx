@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 function TariffCardSkeleton() {
   return (
-    <Card className="border-border">
+    <Card>
       <CardContent className="space-y-2 p-2.5 lg:p-3.5">
         <Skeleton className="h-4 w-2/3" />
         <Skeleton className="h-3 w-full" />
@@ -17,7 +17,7 @@ function TariffCardSkeleton() {
 
 function ParamsCardSkeleton({ lines = 2 }: { lines?: number }) {
   return (
-    <Card className="border-border shadow-sm">
+    <Card>
       <CardHeader className="px-4 py-2.5">
         <Skeleton className="h-4 w-24" />
       </CardHeader>
@@ -57,7 +57,7 @@ export function IntegrationLoadingSkeleton() {
         <ParamsCardSkeleton lines={3} />
       </div>
       <Skeleton className="h-8 w-44 rounded-md" />
-      <Card className="border-border shadow-sm">
+      <Card>
         <CardHeader className="px-4 py-2.5">
           <Skeleton className="h-4 w-48" />
         </CardHeader>
@@ -119,7 +119,7 @@ function EquipmentCardSkeleton() {
 export function EquipmentLoadingSkeleton() {
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2 rounded-lg border border-border bg-card px-3 py-2 sm:flex-row sm:items-center">
+      <div className="portal-card flex flex-col gap-2 rounded-lg px-3 py-2.5 sm:flex-row sm:items-center">
         <Skeleton className="h-8 w-full rounded-md" />
         <Skeleton className="h-8 w-full rounded-md sm:w-[160px]" />
       </div>

@@ -140,7 +140,7 @@ export function TimeTrackerCalculator() {
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2 lg:gap-3.5 lg:items-stretch">
-        <Card className="border-border shadow-sm">
+        <Card>
           <CardHeader className="px-4 py-2.5">
             <CardTitle className="text-sm font-semibold">Параметры</CardTitle>
           </CardHeader>
@@ -215,7 +215,7 @@ export function TimeTrackerCalculator() {
           </CardContent>
         </Card>
 
-        <Card className="border-border border-primary/35 shadow-sm">
+        <Card className="border-primary/30">
           <CardHeader className="px-4 py-2.5">
             <CardTitle className="flex items-center gap-1.5 text-sm font-semibold">
               <Calculator className="size-3.5 text-brand-accent-bright" />

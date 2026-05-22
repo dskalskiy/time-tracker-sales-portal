@@ -33,8 +33,9 @@ export function PortalLogin({ onSuccess }: PortalLoginProps) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm space-y-6 rounded-lg border border-border bg-card p-6 shadow-sm">
+    <div className="portal-shell flex min-h-screen flex-col items-center justify-center px-4">
+      <div className="portal-bg" aria-hidden />
+      <div className="portal-auth-card portal-content w-full max-w-sm space-y-6">
         <div className="flex flex-col items-center gap-3 text-center">
           <Image
             src="/time-tracker-logo.png"
@@ -45,8 +46,8 @@ export function PortalLogin({ onSuccess }: PortalLoginProps) {
             priority
           />
           <div>
-            <h1 className="text-base font-semibold">Портал продаж</h1>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <h1 className="portal-section-title text-base">Портал продаж</h1>
+            <p className="portal-section-desc mt-1 text-xs">
               Введите пароль для доступа
             </p>
           </div>

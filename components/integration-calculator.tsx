@@ -104,7 +104,7 @@ export function IntegrationCalculator() {
     <div className="flex flex-col gap-3">
       <div className="grid gap-3 lg:grid-cols-2 lg:gap-3.5">
         {/* Parameters */}
-        <Card className="border-border shadow-sm">
+        <Card>
           <CardHeader className="px-4 py-2.5">
             <CardTitle className="flex items-center gap-1.5 text-sm font-semibold">
               <Settings className="size-3.5 text-brand-accent-bright" />
@@ -133,7 +133,7 @@ export function IntegrationCalculator() {
         </Card>
 
         {/* Results */}
-        <Card className="border-border border-primary/35 shadow-sm">
+        <Card className="border-primary/30">
           <CardHeader className="px-4 py-2.5">
             <CardTitle className="flex items-center gap-1.5 text-sm font-semibold">
               <Calculator className="size-3.5 text-brand-accent-bright" />
