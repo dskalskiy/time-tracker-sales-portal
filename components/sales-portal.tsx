@@ -87,21 +87,17 @@ export function SalesPortal() {
       <SalesDataProvider>
         <div className="flex min-h-screen flex-col bg-background">
           <header className="sticky top-0 z-50 border-b border-border/80 bg-gradient-to-r from-[#2A2766]/45 via-[#15152a]/98 to-card/98 backdrop-blur-md">
-            <div className="container mx-auto flex items-center gap-2.5 px-4 py-2 lg:gap-3 lg:px-6">
-              <Image
-                src="/time-tracker-logo.png"
-                alt="Time Tracker"
-                width={120}
-                height={40}
-                className="h-7 w-auto shrink-0 object-contain object-left sm:h-8"
-                priority
-              />
-              <div className="hidden h-7 w-px bg-border/70 sm:block" aria-hidden />
-              <div className="flex min-w-0 flex-col justify-center leading-none">
-                <span className="text-[13px] font-semibold tracking-tight text-foreground">
-                  Time Tracker
-                </span>
-                <span className="mt-0.5 text-[11px] text-muted-foreground">Портал продаж</span>
+            <div className="container mx-auto flex items-center px-4 py-2 lg:px-6">
+              <div className="flex flex-col items-start gap-0.5 leading-none">
+                <Image
+                  src="/time-tracker-logo.png"
+                  alt="Time Tracker"
+                  width={120}
+                  height={40}
+                  className="h-7 w-auto shrink-0 object-contain object-left sm:h-8"
+                  priority
+                />
+                <span className="text-[11px] text-muted-foreground">Портал продаж</span>
               </div>
             </div>
           </header>
