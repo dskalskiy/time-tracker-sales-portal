@@ -45,7 +45,7 @@ export function PortalLogin({ onSuccess }: PortalLoginProps) {
             priority
           />
           <div>
-            <h1 className="text-base font-semibold">Sales Portal</h1>
+            <h1 className="text-base font-semibold">Портал продаж</h1>
             <p className="mt-1 text-xs text-muted-foreground">
               Введите пароль для доступа
             </p>
