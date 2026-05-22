@@ -1,0 +1,19 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1225_2)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M340.584 361.886L373.279 394.578L395.692 372.163L363 339.473L340.584 361.886Z" fill="#2A2766"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M285.477 306.777L318.169 339.471L340.584 317.056L307.892 284.363L285.477 306.777Z" fill="#2A2766"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M372.804 116.824L340.087 149.54L362.502 171.957L395.219 139.241L372.804 116.824Z" fill="#2A2766"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M317.671 171.965L284.955 204.676L307.368 227.096L340.087 194.377L317.671 171.965Z" fill="#2A2766"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M149.502 340.137L116.81 372.829L139.229 395.244L171.917 362.552L149.502 340.137Z" fill="#2A2766"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M278.413 256.047L150.399 128.035H127.965V150.469L233.562 256.068L183.132 306.483V328.919H205.566L278.413 256.047Z" fill="#2A2766"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M424.135 168.133L336.265 256L424.129 343.869L512 256L424.135 168.133ZM424.129 298.996L381.143 256.01L424.114 213.035L467.098 256.018L424.129 298.996Z" fill="#2A2766"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M256 336.266L168.13 424.137L255.996 512L343.865 424.129L256 336.266ZM256 381.148L298.977 424.137L255.992 467.123L213.008 424.137L256 381.148Z" fill="#2A2766"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M256.012 0L168.138 87.8713L256.004 175.739L343.878 87.8678L256.012 0ZM255.988 44.9047L298.981 87.892L256.004 130.864L213.017 87.8783L255.988 44.9047Z" fill="#2A2766"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M87.8684 168.133L0 256.006L87.8668 343.869L175.737 256L87.8684 168.133ZM87.8615 213.023L130.855 256.006L87.8668 298.989L44.8772 256.008L87.8615 213.023Z" fill="#2A2766"/>
+</g>
+<defs>
+<clipPath id="clip0_1225_2">
+<rect width="512" height="512" fill="white"/>
+</clipPath>
+</defs>
+</svg>
