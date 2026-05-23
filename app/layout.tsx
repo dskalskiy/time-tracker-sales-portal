@@ -6,10 +6,24 @@ import './globals.css'
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
+const siteTitle = 'Time Tracker — Портал продаж'
+const siteDescription = 'Внутренний портал продаж Time Tracker'
+const ogImagePath = '/og-image.png'
+
+function getMetadataBase(): URL {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return new URL(process.env.NEXT_PUBLIC_SITE_URL)
+  }
+  if (process.env.VERCEL_URL) {
+    return new URL(`https://${process.env.VERCEL_URL}`)
+  }
+  return new URL('http://localhost:3000')
+}
+
 export const metadata: Metadata = {
-  title: 'Time Tracker — Портал продаж',
-  description: 'Внутренний портал продаж Time Tracker',
-  generator: 'v0.app',
+  metadataBase: getMetadataBase(),
+  title: siteTitle,
+  description: siteDescription,
   icons: {
     icon: [
       {
@@ -22,6 +36,25 @@ export const metadata: Metadata = {
       },
     ],
     shortcut: '/favicon.ico',
+  },
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    type: 'website',
+    images: [
+      {
+        url: ogImagePath,
+        width: 1200,
+        height: 630,
+        alt: siteTitle,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteTitle,
+    description: siteDescription,
+    images: [ogImagePath],
   },
 }
 
