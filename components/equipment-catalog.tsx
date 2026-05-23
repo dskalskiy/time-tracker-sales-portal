@@ -259,12 +259,12 @@ function EquipmentCard({ item }: { item: Equipment }) {
               </p>
             </div>
 
-            <div className="space-y-2.5 rounded-lg border border-border bg-muted/40 px-4 py-3">
-              <div className="flex items-center justify-between gap-3 text-sm">
+            <div className="equipment-pricing-panel">
+              <div className="equipment-pricing-row">
                 <span className="text-muted-foreground">Розничная цена</span>
                 <span
                   className={cn(
-                    'font-medium',
+                    'font-medium tabular-nums',
                     item.discount > 0 && 'text-muted-foreground line-through'
                   )}
                 >
@@ -272,7 +272,7 @@ function EquipmentCard({ item }: { item: Equipment }) {
                 </span>
               </div>
 
-              <div className="flex items-center justify-between gap-3 text-sm">
+              <div className="equipment-pricing-row">
                 <span className="text-muted-foreground">Скидка</span>
                 {item.discount > 0 ? (
                   <Badge className="bg-success/20 text-success border-success/30 px-2.5 py-0.5">
@@ -284,9 +284,9 @@ function EquipmentCard({ item }: { item: Equipment }) {
                 )}
               </div>
 
-              <div className="total-price-block flex items-center justify-between gap-3 border-0 pt-2.5">
-                <span className="font-medium text-foreground/90">Цена продажи</span>
-                <span className="total-price text-xl md:text-2xl">
+              <div className="equipment-pricing-row equipment-pricing-row--sale">
+                <span className="equipment-sale-label">Цена продажи</span>
+                <span className="equipment-sale-price">
                   {formatCurrency(item.salePrice)}
                 </span>
               </div>
