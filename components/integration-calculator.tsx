@@ -125,7 +125,7 @@ export function IntegrationCalculator() {
                   placeholder="Введите количество"
                   value={employeeCount}
                   onChange={(e) => setEmployeeCount(e.target.value)}
-                  className="h-8 pl-8 text-sm"
+                  className="portal-field-input h-8 pl-8 text-sm focus-visible:ring-0"
                 />
               </div>
             </div>

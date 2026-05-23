@@ -403,4 +403,31 @@
       font-size: 1.5rem;
     }
   }
+
+  /* Employee count — premium interactive field (tariffs & integration) */
+  .portal-field-input {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(120, 140, 255, 0.28);
+    color: var(--foreground);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .portal-field-input::placeholder {
+    color: rgba(184, 194, 230, 0.78);
+  }
+
+  .portal-field-input:hover:not(:disabled) {
+    border-color: rgba(140, 160, 255, 0.45);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .portal-field-input:focus-visible {
+    outline: none;
+    border-color: #7b6dff;
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 0 3px rgba(123, 109, 255, 0.12);
+  }
 }
