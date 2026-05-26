@@ -115,7 +115,7 @@ export function TimeTrackerCalculator() {
               )}
               onClick={() => handleTariffChange(tariff.value)}
             >
-              <CardContent className="px-2.5 py-2">
+              <CardContent className="px-2.5 py-2.5">
                 <div className="flex items-start justify-between gap-1">
                   <h3
                     className={cn(
@@ -145,10 +145,10 @@ export function TimeTrackerCalculator() {
 
       <div className="grid gap-3 lg:grid-cols-2 lg:gap-3.5 lg:items-stretch">
         <Card className="gap-0 py-0">
-          <CardHeader className="px-2.5 py-2">
+          <CardHeader className="px-2.5 py-2.5">
             <CardTitle className="text-sm font-semibold">Параметры</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 px-2.5 pb-3 pt-0">
+          <CardContent className="space-y-3.5 px-2.5 pb-3.5 pt-0">
             {!selectedTariff ? (
               <p className="py-3 text-center text-xs text-muted-foreground">
                 Выберите тариф
@@ -220,15 +220,15 @@ export function TimeTrackerCalculator() {
         </Card>
 
         <Card className="gap-0 border-primary/30 py-0">
-          <CardHeader className="px-2.5 py-2">
+          <CardHeader className="px-2.5 py-2.5">
             <CardTitle className="flex items-center gap-1.5 text-sm font-semibold">
               <Calculator className="size-3.5 text-brand-accent-bright" />
               Расчёт
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-2.5 pb-3 pt-0">
+          <CardContent className="px-2.5 pb-3.5 pt-0">
             {pricing ? (
-              <div className="flex flex-col gap-2.5">
+              <div className="flex flex-col gap-3">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
                   <div className="flex justify-between gap-2 border-b border-border/40 py-0.5">
                     <span className="text-muted-foreground">Тариф</span>
@@ -303,7 +303,7 @@ export function TimeTrackerCalculator() {
 
                 <TotalPriceBlock
                   amount={formatCurrency(pricing.finalPrice)}
-                  className="py-3"
+                  className="py-3.5"
                 />
               </div>
             ) : (
