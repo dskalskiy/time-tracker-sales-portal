@@ -17,6 +17,13 @@ function findIndividualTier(
   );
 }
 
+/** Upper employee bound for per-employee breakdown on fixed tariffs. */
+const STANDARD_TARIFF_EMPLOYEE_MAX: Record<string, number> = {
+  light: 10,
+  base: 30,
+  medium: 60,
+};
+
 function getTariffEmployeeCount(
   config: TariffConfig,
   employeeCount?: number
@@ -24,6 +31,14 @@ function getTariffEmployeeCount(
   if (config.calcType === 'per_user') {
     return employeeCount ?? config.minUsers;
   }
+
+  const standardMax = STANDARD_TARIFF_EMPLOYEE_MAX[config.key];
+  if (standardMax) return standardMax;
+
+  if (config.maxUsers > 0 && config.maxUsers < 999999) {
+    return config.maxUsers;
+  }
+
   return config.minUsers;
 }
 
@@ -77,16 +92,28 @@ export function calculateTariffPricing(
   const finalPrice = Math.round(basePrice * (1 - discount / 100));
   const monthlyPrice = Math.round(finalPrice / period);
   const savings = basePrice - finalPrice;
-  const perEmployeeMonthlyBase = calculatePerEmployeeMonthly(
-    basePrice,
-    period,
-    employees
-  );
-  const perEmployeeMonthlyFinal = calculatePerEmployeeMonthly(
-    finalPrice,
-    period,
-    employees
-  );
+  let perEmployeeMonthlyBase: number;
+  let perEmployeeMonthlyFinal: number;
+
+  if (config.calcType === 'per_user' && config.tiers) {
+    const tier = findIndividualTier(config.tiers, employees);
+    if (!tier) return null;
+    perEmployeeMonthlyBase = tier.pricePerUser;
+    perEmployeeMonthlyFinal = Math.round(
+      tier.pricePerUser * (1 - discount / 100)
+    );
+  } else {
+    perEmployeeMonthlyBase = calculatePerEmployeeMonthly(
+      basePrice,
+      period,
+      employees
+    );
+    perEmployeeMonthlyFinal = calculatePerEmployeeMonthly(
+      finalPrice,
+      period,
+      employees
+    );
+  }
 
   return {
     tariff: config.name,
