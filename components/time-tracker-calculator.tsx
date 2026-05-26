@@ -108,14 +108,14 @@ export function TimeTrackerCalculator() {
             <Card
               key={tariff.value}
               className={cn(
-                'cursor-pointer transition-colors duration-150',
+                'gap-0 py-0 cursor-pointer transition-colors duration-150',
                 isSelected
                   ? 'interactive-selected border-primary/55'
                   : 'border-border hover:border-primary/40 hover:bg-muted/50'
               )}
               onClick={() => handleTariffChange(tariff.value)}
             >
-              <CardContent className="p-2.5 lg:p-3.5">
+              <CardContent className="px-2.5 py-1.5">
                 <div className="flex items-start justify-between gap-1">
                   <h3
                     className={cn(
@@ -131,10 +131,10 @@ export function TimeTrackerCalculator() {
                     </div>
                   )}
                 </div>
-                <p className="mt-0.5 text-[10px] leading-snug text-muted-foreground lg:mt-1 lg:text-xs">
+                <p className="mt-0.5 text-[10px] leading-snug text-muted-foreground lg:text-xs">
                   {tariff.employees}
                 </p>
-                <p className="mt-1.5 text-[11px] font-medium leading-tight lg:mt-2 lg:text-[13px]">
+                <p className="mt-1 text-[11px] font-medium leading-tight lg:text-[13px]">
                   {tariff.price}
                 </p>
               </CardContent>
@@ -145,10 +145,10 @@ export function TimeTrackerCalculator() {
 
       <div className="grid gap-3 lg:grid-cols-2 lg:gap-3.5 lg:items-stretch">
         <Card className="gap-0 py-0">
-          <CardHeader className="px-4 py-2">
+          <CardHeader className="px-2.5 py-1.5">
             <CardTitle className="text-sm font-semibold">Параметры</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2 px-4 pb-3 pt-0">
+          <CardContent className="space-y-2.5 px-2.5 pb-2.5 pt-0">
             {!selectedTariff ? (
               <p className="py-3 text-center text-xs text-muted-foreground">
                 Выберите тариф
@@ -220,15 +220,15 @@ export function TimeTrackerCalculator() {
         </Card>
 
         <Card className="gap-0 border-primary/30 py-0">
-          <CardHeader className="px-4 py-2">
+          <CardHeader className="px-2.5 py-1.5">
             <CardTitle className="flex items-center gap-1.5 text-sm font-semibold">
               <Calculator className="size-3.5 text-brand-accent-bright" />
               Расчёт
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-4 pb-3 pt-0">
+          <CardContent className="px-2.5 pb-2.5 pt-0">
             {pricing ? (
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-2">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
                   <div className="flex justify-between gap-2 border-b border-border/40 py-0.5">
                     <span className="text-muted-foreground">Тариф</span>
@@ -303,7 +303,7 @@ export function TimeTrackerCalculator() {
 
                 <TotalPriceBlock
                   amount={formatCurrency(pricing.finalPrice)}
-                  className="py-2"
+                  className="py-2.5"
                 />
               </div>
             ) : (
