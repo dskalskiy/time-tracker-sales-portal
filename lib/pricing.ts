@@ -17,6 +17,25 @@ function findIndividualTier(
   );
 }
 
+function getTariffEmployeeCount(
+  config: TariffConfig,
+  employeeCount?: number
+): number {
+  if (config.calcType === 'per_user') {
+    return employeeCount ?? config.minUsers;
+  }
+  return config.minUsers;
+}
+
+function calculatePerEmployeeMonthly(
+  totalForPeriod: number,
+  periodMonths: number,
+  employees: number
+): number {
+  if (employees <= 0 || periodMonths <= 0) return 0;
+  return Math.round(totalForPeriod / periodMonths / employees);
+}
+
 function calculateBaseAmount(
   config: TariffConfig,
   period: number,
@@ -52,11 +71,22 @@ export function calculateTariffPricing(
     if (!findIndividualTier(config.tiers, employees)) return null;
   }
 
+  const employees = getTariffEmployeeCount(config, employeeCount);
   const basePrice = calculateBaseAmount(config, period, employeeCount);
   const discount = periodDiscounts[period] ?? 0;
   const finalPrice = Math.round(basePrice * (1 - discount / 100));
   const monthlyPrice = Math.round(finalPrice / period);
   const savings = basePrice - finalPrice;
+  const perEmployeeMonthlyBase = calculatePerEmployeeMonthly(
+    basePrice,
+    period,
+    employees
+  );
+  const perEmployeeMonthlyFinal = calculatePerEmployeeMonthly(
+    finalPrice,
+    period,
+    employees
+  );
 
   return {
     tariff: config.name,
@@ -66,7 +96,14 @@ export function calculateTariffPricing(
     savings,
     finalPrice,
     monthlyPrice,
+    perEmployeeMonthlyBase,
+    perEmployeeMonthlyFinal,
   };
+}
+
+/** Show base + discounted per-employee rows for long billing periods. */
+export function showPerEmployeeDiscountBreakdown(period: number): boolean {
+  return period === 6 || period === 12;
 }
 
 export function getIntegrationPricing(

@@ -6,7 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useSalesData } from '@/contexts/sales-data-context';
-import { calculateTariffPricing, getIndividualMinEmployees } from '@/lib/pricing';
+import {
+  calculateTariffPricing,
+  getIndividualMinEmployees,
+  showPerEmployeeDiscountBreakdown,
+} from '@/lib/pricing';
 import { Users, Calculator, Check, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TotalPriceBlock } from '@/components/total-price-block';
@@ -248,8 +252,34 @@ export function TimeTrackerCalculator() {
                   </div>
                   <div className="flex justify-between gap-2 border-b border-border/40 py-1">
                     <span className="text-muted-foreground">В месяц</span>
-                    <span className="font-medium">{formatCurrency(pricing.monthlyPrice)}</span>
+                    <span className="font-medium tabular-nums">
+                      {formatCurrency(pricing.monthlyPrice)}
+                    </span>
                   </div>
+                  {showPerEmployeeDiscountBreakdown(pricing.period) ? (
+                    <div className="col-span-2 space-y-0.5 border-b border-border/40 py-1.5">
+                      <span className="text-muted-foreground">Стоимость за сотрудника</span>
+                      <div className="flex justify-between gap-2 pl-0 text-[11px]">
+                        <span className="text-muted-foreground">Без скидки</span>
+                        <span className="tabular-nums text-muted-foreground">
+                          {formatCurrency(pricing.perEmployeeMonthlyBase)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-2">
+                        <span className="text-muted-foreground">Со скидкой</span>
+                        <span className="font-medium tabular-nums text-brand-accent-bright">
+                          {formatCurrency(pricing.perEmployeeMonthlyFinal)}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="col-span-2 flex justify-between gap-2 border-b border-border/40 py-1">
+                      <span className="text-muted-foreground">Стоимость за сотрудника</span>
+                      <span className="font-medium tabular-nums">
+                        {formatCurrency(pricing.perEmployeeMonthlyFinal)}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {pricing.savings > 0 && (

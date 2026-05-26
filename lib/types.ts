@@ -26,6 +26,10 @@ export interface TariffPricing {
   savings: number;
   finalPrice: number;
   monthlyPrice: number;
+  /** Per employee per month, before period discount */
+  perEmployeeMonthlyBase: number;
+  /** Per employee per month, after period discount */
+  perEmployeeMonthlyFinal: number;
 }
 
 export interface IntegrationPricing {
