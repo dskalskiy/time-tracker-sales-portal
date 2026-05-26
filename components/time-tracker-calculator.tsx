@@ -108,14 +108,14 @@ export function TimeTrackerCalculator() {
             <Card
               key={tariff.value}
               className={cn(
-                'gap-0 py-0 cursor-pointer transition-colors duration-150',
+                'cursor-pointer transition-colors duration-150',
                 isSelected
                   ? 'interactive-selected border-primary/55'
                   : 'border-border hover:border-primary/40 hover:bg-muted/50'
               )}
               onClick={() => handleTariffChange(tariff.value)}
             >
-              <CardContent className="px-2.5 py-3">
+              <CardContent className="p-2.5">
                 <div className="flex items-start justify-between gap-1">
                   <h3
                     className={cn(
@@ -144,17 +144,17 @@ export function TimeTrackerCalculator() {
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2 lg:gap-3.5 lg:items-stretch">
-        <Card className="gap-0 py-0">
-          <CardHeader className="px-2.5 py-3">
+        <Card>
+          <CardHeader className="px-4 py-2.5">
             <CardTitle className="text-sm font-semibold">Параметры</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 px-2.5 pb-4 pt-0">
+          <CardContent className="px-4 pb-3.5 pt-0">
             {!selectedTariff ? (
               <p className="py-3 text-center text-xs text-muted-foreground">
                 Выберите тариф
               </p>
             ) : (
-              <>
+              <div className="space-y-1.5">
                 {availablePeriods.length > 0 && (
                   <div className="space-y-1.5">
                     <Label className="text-xs text-muted-foreground">Период</Label>
@@ -214,31 +214,31 @@ export function TimeTrackerCalculator() {
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             )}
           </CardContent>
         </Card>
 
-        <Card className="gap-0 border-primary/30 py-0">
-          <CardHeader className="px-2.5 py-3">
+        <Card className="border-primary/30">
+          <CardHeader className="px-4 py-2.5">
             <CardTitle className="flex items-center gap-1.5 text-sm font-semibold">
               <Calculator className="size-3.5 text-brand-accent-bright" />
               Расчёт
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-2.5 pb-4 pt-0">
+          <CardContent className="px-4 pb-3.5 pt-0">
             {pricing ? (
-              <div className="flex flex-col gap-3.5">
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
-                  <div className="flex justify-between gap-2 border-b border-border/40 py-0.5">
+              <div className="flex flex-col gap-2">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                  <div className="flex justify-between gap-2 border-b border-border/40 py-1">
                     <span className="text-muted-foreground">Тариф</span>
                     <span className="font-medium text-brand-accent-bright">{pricing.tariff}</span>
                   </div>
-                  <div className="flex justify-between gap-2 border-b border-border/40 py-0.5">
+                  <div className="flex justify-between gap-2 border-b border-border/40 py-1">
                     <span className="text-muted-foreground">Период</span>
                     <span className="font-medium">{formatPeriod(pricing.period)}</span>
                   </div>
-                  <div className="flex justify-between gap-2 border-b border-border/40 py-0.5">
+                  <div className="flex justify-between gap-2 border-b border-border/40 py-1">
                     <span className="text-muted-foreground">Скидка</span>
                     <Badge
                       variant={pricing.discount > 0 ? 'default' : 'secondary'}
@@ -250,22 +250,22 @@ export function TimeTrackerCalculator() {
                       {pricing.discount > 0 ? `−${pricing.discount}%` : '—'}
                     </Badge>
                   </div>
-                  <div className="flex justify-between gap-2 border-b border-border/40 py-0.5">
+                  <div className="flex justify-between gap-2 border-b border-border/40 py-1">
                     <span className="text-muted-foreground">В месяц</span>
                     <span className="font-medium tabular-nums">
                       {formatCurrency(pricing.monthlyPrice)}
                     </span>
                   </div>
                   {showPerEmployeeDiscountBreakdown(pricing.period) ? (
-                    <div className="col-span-2 space-y-0.5 border-b border-border/40 py-1.5">
+                    <div className="col-span-2 border-b border-border/40 py-1">
                       <span className="text-muted-foreground">Стоимость за сотрудника</span>
-                      <div className="flex justify-between gap-2 pl-0 text-[11px]">
+                      <div className="mt-0.5 flex justify-between gap-2 text-[11px]">
                         <span className="text-muted-foreground">Без скидки</span>
                         <span className="tabular-nums text-muted-foreground">
                           {formatCurrency(pricing.perEmployeeMonthlyBase)}
                         </span>
                       </div>
-                      <div className="flex justify-between gap-2">
+                      <div className="flex justify-between gap-2 text-[11px]">
                         <span className="text-muted-foreground">Со скидкой</span>
                         <span className="font-medium tabular-nums text-brand-accent-bright">
                           {formatCurrency(pricing.perEmployeeMonthlyFinal)}
@@ -273,7 +273,7 @@ export function TimeTrackerCalculator() {
                       </div>
                     </div>
                   ) : (
-                    <div className="col-span-2 flex justify-between gap-2 border-b border-border/40 py-0.5">
+                    <div className="col-span-2 flex justify-between gap-2 border-b border-border/40 py-1">
                       <span className="text-muted-foreground">Стоимость за сотрудника</span>
                       <span className="font-medium tabular-nums">
                         {formatCurrency(pricing.perEmployeeMonthlyFinal)}
@@ -301,10 +301,7 @@ export function TimeTrackerCalculator() {
                   </div>
                 )}
 
-                <TotalPriceBlock
-                  amount={formatCurrency(pricing.finalPrice)}
-                  className="py-4"
-                />
+                <TotalPriceBlock amount={formatCurrency(pricing.finalPrice)} />
               </div>
             ) : (
               <div className="flex items-center justify-center gap-2 py-4 text-center">
