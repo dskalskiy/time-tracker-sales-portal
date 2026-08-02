@@ -13,6 +13,7 @@ export function TimeTrackerCalculator() {
       tariffConfig={data.timeTrackerTariffConfig}
       periodDiscounts={data.periodDiscounts}
       idPrefix="tt"
+      gridTitle="Тарифная сетка Time Tracker"
     />
   );
 }
@@ -27,6 +28,7 @@ export function KedoCalculator() {
       tariffConfig={data.kedoTariffConfig}
       periodDiscounts={data.periodDiscounts}
       idPrefix="kedo"
+      gridTitle="Тарифная сетка КЭДО"
     />
   );
 }

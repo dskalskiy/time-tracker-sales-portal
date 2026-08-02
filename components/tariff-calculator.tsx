@@ -5,13 +5,23 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import {
   calculateTariffPricing,
   getIndividualMinEmployees,
+  getTariffGridPeriodPrice,
   showPerEmployeeDiscountBreakdown,
+  TARIFF_GRID_PERIODS,
 } from '@/lib/pricing';
 import type { TariffConfig } from '@/lib/types';
-import { Users, Calculator, Check, Sparkles } from 'lucide-react';
+import { Users, Calculator, Check, Sparkles, Table2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TotalPriceBlock } from '@/components/total-price-block';
 
@@ -27,11 +37,145 @@ function formatPeriod(months: number): string {
   return `${months} мес.`;
 }
 
+function TariffGridDialog({
+  title,
+  tariffConfig,
+  periodDiscounts,
+  selectedTariff,
+}: {
+  title: string;
+  tariffConfig: Record<string, TariffConfig>;
+  periodDiscounts: Record<number, number>;
+  selectedTariff?: string;
+}) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="h-8 w-fit gap-1.5 text-xs">
+          <Table2 className="size-3.5" />
+          Показать тарифную сетку
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-xl p-4 gap-3">
+        <DialogHeader>
+          <DialogTitle className="text-base">{title}</DialogTitle>
+        </DialogHeader>
+        <TariffGridTable
+          tariffConfig={tariffConfig}
+          periodDiscounts={periodDiscounts}
+          selectedTariff={selectedTariff}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function TariffGridTable({
+  tariffConfig,
+  periodDiscounts,
+  selectedTariff,
+}: {
+  tariffConfig: Record<string, TariffConfig>;
+  periodDiscounts: Record<number, number>;
+  selectedTariff?: string;
+}) {
+  const rows = useMemo(
+    () =>
+      Object.values(tariffConfig).sort((a, b) => a.minUsers - b.minUsers),
+    [tariffConfig]
+  );
+
+  return (
+    <div className="overflow-x-auto -mx-1">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border">
+            <th className="text-left py-2 px-3 text-xs font-medium text-muted-foreground">
+              Тариф
+            </th>
+            <th className="text-left py-2 px-3 text-xs font-medium text-muted-foreground">
+              Диапазон сотрудников
+            </th>
+            {TARIFF_GRID_PERIODS.map((period) => (
+              <th
+                key={period}
+                className="text-right py-2 px-3 text-xs font-medium text-muted-foreground whitespace-nowrap"
+              >
+                {period === 1
+                  ? '1 месяц'
+                  : period === 6
+                    ? '6 месяцев'
+                    : '12 месяцев'}
+              </th>
+            ))}
+            <th className="w-8 py-2 px-2" aria-label="Выбран" />
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((tariff) => {
+            const isActive = selectedTariff === tariff.key;
+
+            return (
+              <tr
+                key={tariff.key}
+                className={cn(
+                  'border-b border-border/50',
+                  isActive && 'bg-primary/10'
+                )}
+              >
+                <td className="py-2 px-3">
+                  <span className="font-medium">{tariff.name}</span>
+                </td>
+                <td className="py-2 px-3 text-muted-foreground text-xs sm:text-sm">
+                  {tariff.employeesLabel.replace(/\s*сотрудников?$/i, '')}
+                </td>
+                {TARIFF_GRID_PERIODS.map((period) => {
+                  const amount = getTariffGridPeriodPrice(
+                    tariffConfig,
+                    periodDiscounts,
+                    tariff.key,
+                    period
+                  );
+
+                  return (
+                    <td
+                      key={period}
+                      className="py-2 px-3 text-right tabular-nums whitespace-nowrap"
+                    >
+                      {amount == null ? (
+                        <span className="text-muted-foreground">—</span>
+                      ) : (
+                        <span className="font-semibold text-brand-accent-bright">
+                          {formatCurrency(amount)}
+                        </span>
+                      )}
+                    </td>
+                  );
+                })}
+                <td className="py-2 px-2 text-center">
+                  {isActive ? (
+                    <Check
+                      className="mx-auto size-3.5 text-brand-accent-bright"
+                      aria-label="Выбранный тариф"
+                    />
+                  ) : null}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export type TariffCalculatorProps = {
   tariffConfig: Record<string, TariffConfig>;
   periodDiscounts: Record<number, number>;
   /** Unique prefix for form control ids when multiple calculators are on the page */
   idPrefix?: string;
+  /** Dialog title for the tariff grid modal */
+  gridTitle: string;
 };
 
 /**
@@ -42,6 +186,7 @@ export function TariffCalculator({
   tariffConfig,
   periodDiscounts,
   idPrefix = 'tariff',
+  gridTitle,
 }: TariffCalculatorProps) {
   const [selectedTariff, setSelectedTariff] = useState<string>('');
   const [selectedPeriod, setSelectedPeriod] = useState<number | null>(null);
@@ -162,73 +307,90 @@ export function TariffCalculator({
           </CardHeader>
           <CardContent className="px-4 pb-3.5 pt-0">
             {!selectedTariff ? (
-              <p className="py-3 text-center text-xs text-muted-foreground">
-                Выберите тариф
-              </p>
+              <div className="space-y-3">
+                <p className="py-3 text-center text-xs text-muted-foreground">
+                  Выберите тариф
+                </p>
+                <TariffGridDialog
+                  title={gridTitle}
+                  tariffConfig={tariffConfig}
+                  periodDiscounts={periodDiscounts}
+                  selectedTariff={selectedTariff}
+                />
+              </div>
             ) : (
-              <div className="space-y-1.5">
-                {availablePeriods.length > 0 && (
-                  <div className="space-y-1.5">
-                    <Label className="text-xs text-muted-foreground">Период</Label>
-                    <div className="flex flex-wrap gap-1.5">
-                      {availablePeriods.map((period) => {
-                        const discount = periodDiscounts[period] || 0;
-                        const isActive = selectedPeriod === period;
+              <div className="space-y-3">
+                <div className="space-y-1.5">
+                  {availablePeriods.length > 0 && (
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-muted-foreground">Период</Label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {availablePeriods.map((period) => {
+                          const discount = periodDiscounts[period] || 0;
+                          const isActive = selectedPeriod === period;
 
-                        return (
-                          <button
-                            key={period}
-                            type="button"
-                            onClick={() => setSelectedPeriod(period)}
-                            className={cn(
-                              'inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-semibold transition-colors',
-                              isActive
-                                ? 'border-primary bg-primary text-primary-foreground shadow-sm'
-                                : 'border-border bg-muted/40 text-foreground hover:border-primary/50 hover:bg-muted/60'
-                            )}
-                          >
-                            {formatPeriod(period)}
-                            {discount > 0 && (
-                              <span
-                                className={cn(
-                                  'rounded px-1 py-px text-[10px] font-bold leading-none',
-                                  isActive
-                                    ? 'bg-primary-foreground/20 text-primary-foreground'
-                                    : 'bg-success/15 text-success'
-                                )}
-                              >
-                                −{discount}%
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
+                          return (
+                            <button
+                              key={period}
+                              type="button"
+                              onClick={() => setSelectedPeriod(period)}
+                              className={cn(
+                                'inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-semibold transition-colors',
+                                isActive
+                                  ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                                  : 'border-border bg-muted/40 text-foreground hover:border-primary/50 hover:bg-muted/60'
+                              )}
+                            >
+                              {formatPeriod(period)}
+                              {discount > 0 && (
+                                <span
+                                  className={cn(
+                                    'rounded px-1 py-px text-[10px] font-bold leading-none',
+                                    isActive
+                                      ? 'bg-primary-foreground/20 text-primary-foreground'
+                                      : 'bg-success/15 text-success'
+                                  )}
+                                >
+                                  −{discount}%
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {showEmployeeInput && (
-                  <div className="space-y-1.5">
-                    <Label
-                      htmlFor={`${idPrefix}-employees`}
-                      className="text-xs text-muted-foreground"
-                    >
-                      Количество сотрудников
-                    </Label>
-                    <div className="relative">
-                      <Users className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                        id={`${idPrefix}-employees`}
-                        type="number"
-                        min={individualMin}
-                        placeholder={`От ${individualMin}`}
-                        value={employeeCount}
-                        onChange={(e) => setEmployeeCount(e.target.value)}
-                        className="portal-field-input h-8 pl-8 text-sm focus-visible:ring-0"
-                      />
+                  {showEmployeeInput && (
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor={`${idPrefix}-employees`}
+                        className="text-xs text-muted-foreground"
+                      >
+                        Количество сотрудников
+                      </Label>
+                      <div className="relative">
+                        <Users className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          id={`${idPrefix}-employees`}
+                          type="number"
+                          min={individualMin}
+                          placeholder={`От ${individualMin}`}
+                          value={employeeCount}
+                          onChange={(e) => setEmployeeCount(e.target.value)}
+                          className="portal-field-input h-8 pl-8 text-sm focus-visible:ring-0"
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+
+                <TariffGridDialog
+                  title={gridTitle}
+                  tariffConfig={tariffConfig}
+                  periodDiscounts={periodDiscounts}
+                  selectedTariff={selectedTariff}
+                />
               </div>
             )}
           </CardContent>

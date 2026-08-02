@@ -150,3 +150,34 @@ export function getIndividualMinEmployees(
 ): number {
   return tariffConfig.individual?.minUsers ?? 61;
 }
+
+/** Columns for the tariff grid modal (full period totals). */
+export const TARIFF_GRID_PERIODS = [1, 6, 12] as const;
+
+/**
+ * Final price for a tariff/period cell in the grid.
+ * Returns null when the period is not available for that tariff (show "—").
+ * For per-user (Individual) uses minUsers — no dependency on UI employee input.
+ */
+export function getTariffGridPeriodPrice(
+  tariffConfig: Record<string, TariffConfig>,
+  periodDiscounts: Record<number, number>,
+  tariffKey: string,
+  period: number
+): number | null {
+  const config = tariffConfig[tariffKey];
+  if (!config || !config.periods.includes(period)) return null;
+
+  const employees =
+    config.calcType === 'per_user' ? config.minUsers : undefined;
+
+  const pricing = calculateTariffPricing(
+    tariffConfig,
+    periodDiscounts,
+    tariffKey,
+    period,
+    employees
+  );
+
+  return pricing?.finalPrice ?? null;
+}
