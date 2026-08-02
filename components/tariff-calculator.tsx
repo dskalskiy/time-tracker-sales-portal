@@ -17,11 +17,11 @@ import {
   calculateTariffPricing,
   getIndividualMinEmployees,
   getTariffGridPeriodPrice,
-  getTariffGridRowEmployeeCount,
   buildTariffGridRows,
   isTariffGridRowActive,
   showPerEmployeeDiscountBreakdown,
   TARIFF_GRID_PERIODS,
+  type TariffGridRow,
 } from '@/lib/pricing';
 import type { TariffConfig } from '@/lib/types';
 import { Users, Calculator, Check, Sparkles, Table2 } from 'lucide-react';
@@ -63,7 +63,7 @@ function TariffGridDialog({
           Показать тарифную сетку
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-xl p-4 gap-3">
+      <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto p-4 gap-3">
         <DialogHeader>
           <DialogTitle className="text-base">{title}</DialogTitle>
         </DialogHeader>
@@ -79,47 +79,56 @@ function TariffGridDialog({
   );
 }
 
-function TariffGridTable({
+function TariffGridPeriodHeaders() {
+  return (
+    <>
+      {TARIFF_GRID_PERIODS.map((period) => (
+        <th
+          key={period}
+          className="text-right py-2 px-3 text-xs font-medium text-muted-foreground whitespace-nowrap"
+        >
+          {period === 1
+            ? '1 месяц'
+            : period === 6
+              ? '6 месяцев'
+              : '12 месяцев'}
+        </th>
+      ))}
+    </>
+  );
+}
+
+function TariffGridSectionTable({
+  rows,
   tariffConfig,
   periodDiscounts,
   selectedTariff,
   employeeCount,
   individualMin,
+  showTariffName,
 }: {
+  rows: TariffGridRow[];
   tariffConfig: Record<string, TariffConfig>;
   periodDiscounts: Record<number, number>;
   selectedTariff?: string;
   employeeCount: string;
   individualMin: number;
+  showTariffName: boolean;
 }) {
-  const rows = useMemo(
-    () => buildTariffGridRows(tariffConfig),
-    [tariffConfig]
-  );
-
   return (
     <div className="overflow-x-auto -mx-1">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-border">
-            <th className="text-left py-2 px-3 text-xs font-medium text-muted-foreground">
-              Тариф
-            </th>
+            {showTariffName ? (
+              <th className="text-left py-2 px-3 text-xs font-medium text-muted-foreground">
+                Тариф
+              </th>
+            ) : null}
             <th className="text-left py-2 px-3 text-xs font-medium text-muted-foreground">
               Диапазон сотрудников
             </th>
-            {TARIFF_GRID_PERIODS.map((period) => (
-              <th
-                key={period}
-                className="text-right py-2 px-3 text-xs font-medium text-muted-foreground whitespace-nowrap"
-              >
-                {period === 1
-                  ? '1 месяц'
-                  : period === 6
-                    ? '6 месяцев'
-                    : '12 месяцев'}
-              </th>
-            ))}
+            <TariffGridPeriodHeaders />
             <th className="w-8 py-2 px-2" aria-label="Выбран" />
           </tr>
         </thead>
@@ -131,11 +140,9 @@ function TariffGridTable({
               employeeCount,
               individualMin
             );
-            const priceEmployees = getTariffGridRowEmployeeCount(
-              row,
-              employeeCount,
-              individualMin
-            );
+            // Individual tiers: use tier min so calculateTariffPricing picks the right rate.
+            // Standard fixed tariffs: omit employee count.
+            const priceEmployees = row.employeeCountForPrice;
 
             return (
               <tr
@@ -145,9 +152,11 @@ function TariffGridTable({
                   isActive && 'bg-primary/10'
                 )}
               >
-                <td className="py-2 px-3">
-                  <span className="font-medium">{row.name}</span>
-                </td>
+                {showTariffName ? (
+                  <td className="py-2 px-3">
+                    <span className="font-medium">{row.name}</span>
+                  </td>
+                ) : null}
                 <td className="py-2 px-3 text-muted-foreground text-xs sm:text-sm tabular-nums">
                   {row.rangeLabel}
                 </td>
@@ -188,6 +197,63 @@ function TariffGridTable({
           })}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+function TariffGridTable({
+  tariffConfig,
+  periodDiscounts,
+  selectedTariff,
+  employeeCount,
+  individualMin,
+}: {
+  tariffConfig: Record<string, TariffConfig>;
+  periodDiscounts: Record<number, number>;
+  selectedTariff?: string;
+  employeeCount: string;
+  individualMin: number;
+}) {
+  const { standard, individual } = useMemo(
+    () => buildTariffGridRows(tariffConfig),
+    [tariffConfig]
+  );
+
+  return (
+    <div className="space-y-4">
+      {standard.length > 0 && (
+        <section className="space-y-1.5">
+          <h3 className="px-1 text-xs font-semibold text-foreground">
+            Стандартные тарифы
+          </h3>
+          <TariffGridSectionTable
+            rows={standard}
+            tariffConfig={tariffConfig}
+            periodDiscounts={periodDiscounts}
+            selectedTariff={selectedTariff}
+            employeeCount={employeeCount}
+            individualMin={individualMin}
+            showTariffName
+          />
+        </section>
+      )}
+
+      {individual.length > 0 && (
+        <section className="space-y-1.5">
+          <h3 className="px-1 text-xs font-semibold text-foreground">
+            Тариф Individual (стоимость за 1 сотрудника)
+          </h3>
+          <TariffGridSectionTable
+            rows={individual}
+            tariffConfig={tariffConfig}
+            periodDiscounts={periodDiscounts}
+            selectedTariff={selectedTariff}
+            employeeCount={employeeCount}
+            individualMin={individualMin}
+            showTariffName={false}
+          />
+        </section>
+      )}
     </div>
   );
 }

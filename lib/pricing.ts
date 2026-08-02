@@ -170,11 +170,17 @@ export type TariffGridRow = {
   employeeCountForPrice?: number;
 };
 
+export type TariffGridSections = {
+  standard: TariffGridRow[];
+  individual: TariffGridRow[];
+};
+
 /** One grid row per sheet entry — Individual tiers are not merged. */
 export function buildTariffGridRows(
   tariffConfig: Record<string, TariffConfig>
-): TariffGridRow[] {
-  const rows: TariffGridRow[] = [];
+): TariffGridSections {
+  const standard: TariffGridRow[] = [];
+  const individual: TariffGridRow[] = [];
 
   const tariffs = Object.values(tariffConfig).sort(
     (a, b) => a.minUsers - b.minUsers
@@ -184,7 +190,7 @@ export function buildTariffGridRows(
     if (tariff.calcType === 'per_user' && tariff.tiers && tariff.tiers.length > 0) {
       const tiers = [...tariff.tiers].sort((a, b) => a.minUsers - b.minUsers);
       for (const tier of tiers) {
-        rows.push({
+        individual.push({
           rowKey: `${tariff.key}-${tier.minUsers}-${tier.maxUsers}`,
           tariffKey: tariff.key,
           name: tariff.name,
@@ -197,7 +203,7 @@ export function buildTariffGridRows(
       continue;
     }
 
-    rows.push({
+    standard.push({
       rowKey: tariff.key,
       tariffKey: tariff.key,
       name: tariff.name,
@@ -207,11 +213,13 @@ export function buildTariffGridRows(
     });
   }
 
-  return rows;
+  return { standard, individual };
 }
 
 /**
- * Final price for a tariff grid cell — same calculateTariffPricing as the main calculator.
+ * Price for a tariff grid cell — same calculateTariffPricing as the main calculator.
+ * Standard: full-period package total (finalPrice).
+ * Individual: full-period cost for 1 employee (not monthly-with-discount).
  * Returns null when the period is not available for that tariff (show "—").
  */
 export function getTariffGridPeriodPrice(
@@ -231,8 +239,16 @@ export function getTariffGridPeriodPrice(
     period,
     employeeCount
   );
+  if (!pricing) return null;
 
-  return pricing?.finalPrice ?? null;
+  if (config.calcType === 'per_user') {
+    // e.g. 800 × 6 × 0.9 — full period for one employee
+    return Math.round(
+      pricing.perEmployeeMonthlyBase * period * (1 - pricing.discount / 100)
+    );
+  }
+
+  return pricing.finalPrice;
 }
 
 function resolveGridEmployeeCount(
