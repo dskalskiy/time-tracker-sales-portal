@@ -2,6 +2,7 @@ const SPREADSHEET_ID = '1jvcCcCKm3FPFLT3KK6b8j5sKMwS1L0ZAwOghIZf2i1E';
 
 export const SHEET_NAMES = {
   tariffs: 'TimeTracker_Tariffs',
+  kedoTariffs: 'KEDO_Tariffs',
   integration: 'Integration_Prices',
   equipment: 'Equipment',
   discounts: 'Discounts',
@@ -94,16 +95,19 @@ export async function fetchSheetRows(sheetName: SheetName): Promise<SheetRow[]> 
 
 export async function fetchAllSheets(): Promise<{
   tariffs: SheetRow[];
+  kedoTariffs: SheetRow[];
   integration: SheetRow[];
   equipment: SheetRow[];
   discounts: SheetRow[];
 }> {
-  const [tariffs, integration, equipment, discounts] = await Promise.all([
-    fetchSheetRows(SHEET_NAMES.tariffs),
-    fetchSheetRows(SHEET_NAMES.integration),
-    fetchSheetRows(SHEET_NAMES.equipment),
-    fetchSheetRows(SHEET_NAMES.discounts),
-  ]);
+  const [tariffs, kedoTariffs, integration, equipment, discounts] =
+    await Promise.all([
+      fetchSheetRows(SHEET_NAMES.tariffs),
+      fetchSheetRows(SHEET_NAMES.kedoTariffs),
+      fetchSheetRows(SHEET_NAMES.integration),
+      fetchSheetRows(SHEET_NAMES.equipment),
+      fetchSheetRows(SHEET_NAMES.discounts),
+    ]);
 
-  return { tariffs, integration, equipment, discounts };
+  return { tariffs, kedoTariffs, integration, equipment, discounts };
 }

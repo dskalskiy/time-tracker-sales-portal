@@ -177,12 +177,14 @@ export function mapEquipment(rows: SheetRow[]): Equipment[] {
 
 export function buildSalesData(raw: {
   tariffs: SheetRow[];
+  kedoTariffs: SheetRow[];
   integration: SheetRow[];
   equipment: SheetRow[];
   discounts: SheetRow[];
 }): SalesData {
   const periodDiscounts = mapDiscounts(raw.discounts);
-  const tariffConfig = mapTariffConfig(raw.tariffs, periodDiscounts);
+  const timeTrackerTariffConfig = mapTariffConfig(raw.tariffs, periodDiscounts);
+  const kedoTariffConfig = mapTariffConfig(raw.kedoTariffs, periodDiscounts);
   const integrationPricing = mapIntegrationPricing(raw.integration);
   const equipmentData = mapEquipment(raw.equipment);
 
@@ -192,7 +194,8 @@ export function buildSalesData(raw: {
   ];
 
   return {
-    tariffConfig,
+    timeTrackerTariffConfig,
+    kedoTariffConfig,
     periodDiscounts,
     integrationPricing,
     equipmentData,
@@ -201,8 +204,11 @@ export function buildSalesData(raw: {
 }
 
 export function validateSalesData(data: SalesData): void {
-  if (Object.keys(data.tariffConfig).length === 0) {
+  if (Object.keys(data.timeTrackerTariffConfig).length === 0) {
     throw new Error('No tariff data found in TimeTracker_Tariffs');
+  }
+  if (Object.keys(data.kedoTariffConfig).length === 0) {
+    throw new Error('No tariff data found in KEDO_Tariffs');
   }
   if (data.integrationPricing.length === 0) {
     throw new Error('No integration pricing data found');

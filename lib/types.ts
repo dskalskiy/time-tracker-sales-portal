@@ -58,7 +58,11 @@ export interface Equipment {
 }
 
 export interface SalesData {
-  tariffConfig: Record<string, TariffConfig>;
+  /** Tariffs from TimeTracker_Tariffs */
+  timeTrackerTariffConfig: Record<string, TariffConfig>;
+  /** Tariffs from KEDO_Tariffs — never fall back to Time Tracker */
+  kedoTariffConfig: Record<string, TariffConfig>;
+  /** Shared period discounts from Discounts (TT + KEDO only) */
   periodDiscounts: Record<number, number>;
   integrationPricing: IntegrationPricing[];
   equipmentData: Equipment[];

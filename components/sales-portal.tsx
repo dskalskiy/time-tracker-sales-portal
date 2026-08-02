@@ -2,10 +2,13 @@
 
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TimeTrackerCalculator } from '@/components/time-tracker-calculator';
+import {
+  TimeTrackerCalculator,
+  KedoCalculator,
+} from '@/components/time-tracker-calculator';
 import { IntegrationCalculator } from '@/components/integration-calculator';
 import { EquipmentCatalog } from '@/components/equipment-catalog';
-import { Clock, Settings, Package } from 'lucide-react';
+import { Clock, FileText, Settings, Package } from 'lucide-react';
 import { SalesDataProvider, useSalesData } from '@/contexts/sales-data-context';
 import { DataError, useDataLoading } from '@/components/data-state';
 import {
@@ -25,32 +28,63 @@ function PortalMain() {
 
   return (
     <Tabs defaultValue="timetracker" className="space-y-4 lg:space-y-5">
-      <TabsList className="portal-tabs-list grid h-9 w-full grid-cols-3 p-0.5 sm:inline-flex sm:w-auto">
-        <TabsTrigger value="timetracker" className="gap-1.5 text-xs sm:text-sm">
-          <Clock className="size-3.5 sm:size-4" />
-          Тарифы
+      <TabsList className="portal-tabs-list grid h-9 w-full grid-cols-4 p-0.5 sm:inline-flex sm:w-auto">
+        <TabsTrigger value="timetracker" className="gap-1.5 px-1.5 text-[10px] sm:gap-1.5 sm:px-2.5 sm:text-sm">
+          <Clock className="size-3.5 shrink-0 sm:size-4" />
+          <span className="hidden sm:inline">Тарифы Time Tracker</span>
+          <span className="sm:hidden">Time Tracker</span>
         </TabsTrigger>
-        <TabsTrigger value="integration" className="gap-1.5 text-xs sm:text-sm">
-          <Settings className="size-3.5 sm:size-4" />
+        <TabsTrigger value="kedo" className="gap-1.5 px-1.5 text-[10px] sm:gap-1.5 sm:px-2.5 sm:text-sm">
+          <FileText className="size-3.5 shrink-0 sm:size-4" />
+          <span className="hidden sm:inline">Тарифы КЭДО</span>
+          <span className="sm:hidden">КЭДО</span>
+        </TabsTrigger>
+        <TabsTrigger value="integration" className="gap-1.5 px-1.5 text-[10px] sm:gap-1.5 sm:px-2.5 sm:text-sm">
+          <Settings className="size-3.5 shrink-0 sm:size-4" />
           <span className="hidden sm:inline">Интеграция</span>
           <span className="sm:hidden">Интегр.</span>
         </TabsTrigger>
-        <TabsTrigger value="equipment" className="gap-1.5 text-xs sm:text-sm">
-          <Package className="size-3.5 sm:size-4" />
+        <TabsTrigger value="equipment" className="gap-1.5 px-1.5 text-[10px] sm:gap-1.5 sm:px-2.5 sm:text-sm">
+          <Package className="size-3.5 shrink-0 sm:size-4" />
           <span className="hidden sm:inline">Оборудование</span>
           <span className="sm:hidden">Оборуд.</span>
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="timetracker" className="mt-3 outline-none">
+      {/* forceMount keeps independent calculator UI state per product tab */}
+      <TabsContent
+        value="timetracker"
+        forceMount
+        className="mt-3 outline-none data-[state=inactive]:hidden"
+      >
         <div className="space-y-4">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-            <h2 className="portal-section-title text-base lg:text-lg">Калькулятор тарифов</h2>
+            <h2 className="portal-section-title text-base lg:text-lg">
+              Калькулятор тарифов Time Tracker
+            </h2>
             <p className="portal-section-desc text-xs sm:text-[13px]">
               Расчёт стоимости подписки Time Tracker
             </p>
           </div>
           {isLoading ? <TimeTrackerLoadingSkeleton /> : <TimeTrackerCalculator />}
+        </div>
+      </TabsContent>
+
+      <TabsContent
+        value="kedo"
+        forceMount
+        className="mt-3 outline-none data-[state=inactive]:hidden"
+      >
+        <div className="space-y-4">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+            <h2 className="portal-section-title text-base lg:text-lg">
+              Калькулятор тарифов КЭДО
+            </h2>
+            <p className="portal-section-desc text-xs sm:text-[13px]">
+              Расчёт стоимости подписки КЭДО
+            </p>
+          </div>
+          {isLoading ? <TimeTrackerLoadingSkeleton /> : <KedoCalculator />}
         </div>
       </TabsContent>
 
