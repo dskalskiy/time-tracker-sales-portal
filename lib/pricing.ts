@@ -154,30 +154,131 @@ export function getIndividualMinEmployees(
 /** Columns for the tariff grid modal (full period totals). */
 export const TARIFF_GRID_PERIODS = [1, 6, 12] as const;
 
+export function formatTariffGridUsersRange(minUsers: number, maxUsers: number): string {
+  if (maxUsers >= 999999) return `${minUsers}+`;
+  return `${minUsers}–${maxUsers}`;
+}
+
+export type TariffGridRow = {
+  rowKey: string;
+  tariffKey: string;
+  name: string;
+  minUsers: number;
+  maxUsers: number;
+  rangeLabel: string;
+  /** Employee count passed into calculateTariffPricing (tier min for per_user). */
+  employeeCountForPrice?: number;
+};
+
+/** One grid row per sheet entry — Individual tiers are not merged. */
+export function buildTariffGridRows(
+  tariffConfig: Record<string, TariffConfig>
+): TariffGridRow[] {
+  const rows: TariffGridRow[] = [];
+
+  const tariffs = Object.values(tariffConfig).sort(
+    (a, b) => a.minUsers - b.minUsers
+  );
+
+  for (const tariff of tariffs) {
+    if (tariff.calcType === 'per_user' && tariff.tiers && tariff.tiers.length > 0) {
+      const tiers = [...tariff.tiers].sort((a, b) => a.minUsers - b.minUsers);
+      for (const tier of tiers) {
+        rows.push({
+          rowKey: `${tariff.key}-${tier.minUsers}-${tier.maxUsers}`,
+          tariffKey: tariff.key,
+          name: tariff.name,
+          minUsers: tier.minUsers,
+          maxUsers: tier.maxUsers,
+          rangeLabel: formatTariffGridUsersRange(tier.minUsers, tier.maxUsers),
+          employeeCountForPrice: tier.minUsers,
+        });
+      }
+      continue;
+    }
+
+    rows.push({
+      rowKey: tariff.key,
+      tariffKey: tariff.key,
+      name: tariff.name,
+      minUsers: tariff.minUsers,
+      maxUsers: tariff.maxUsers,
+      rangeLabel: formatTariffGridUsersRange(tariff.minUsers, tariff.maxUsers),
+    });
+  }
+
+  return rows;
+}
+
 /**
- * Final price for a tariff/period cell in the grid.
+ * Final price for a tariff grid cell — same calculateTariffPricing as the main calculator.
  * Returns null when the period is not available for that tariff (show "—").
- * For per-user (Individual) uses minUsers — no dependency on UI employee input.
  */
 export function getTariffGridPeriodPrice(
   tariffConfig: Record<string, TariffConfig>,
   periodDiscounts: Record<number, number>,
   tariffKey: string,
-  period: number
+  period: number,
+  employeeCount?: number
 ): number | null {
   const config = tariffConfig[tariffKey];
   if (!config || !config.periods.includes(period)) return null;
-
-  const employees =
-    config.calcType === 'per_user' ? config.minUsers : undefined;
 
   const pricing = calculateTariffPricing(
     tariffConfig,
     periodDiscounts,
     tariffKey,
     period,
-    employees
+    employeeCount
   );
 
   return pricing?.finalPrice ?? null;
+}
+
+function resolveGridEmployeeCount(
+  employeeCountInput: string,
+  individualMin: number
+): number {
+  const count = parseInt(employeeCountInput, 10);
+  return Number.isFinite(count) && count > 0 ? count : individualMin;
+}
+
+/**
+ * Employee count for grid pricing via calculateTariffPricing.
+ * Matching Individual tier uses the calculator input; other tiers use tier min.
+ */
+export function getTariffGridRowEmployeeCount(
+  row: TariffGridRow,
+  employeeCountInput: string,
+  individualMin: number
+): number | undefined {
+  if (row.employeeCountForPrice == null) return undefined;
+
+  const employees = resolveGridEmployeeCount(
+    employeeCountInput,
+    individualMin
+  );
+  if (employees >= row.minUsers && employees <= row.maxUsers) {
+    return employees;
+  }
+
+  return row.employeeCountForPrice;
+}
+
+export function isTariffGridRowActive(
+  row: TariffGridRow,
+  selectedTariff: string | undefined,
+  employeeCountInput: string,
+  individualMin: number
+): boolean {
+  if (!selectedTariff || selectedTariff !== row.tariffKey) return false;
+
+  if (row.employeeCountForPrice == null) return true;
+
+  const employees = resolveGridEmployeeCount(
+    employeeCountInput,
+    individualMin
+  );
+
+  return employees >= row.minUsers && employees <= row.maxUsers;
 }

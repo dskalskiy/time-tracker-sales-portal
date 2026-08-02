@@ -17,6 +17,9 @@ import {
   calculateTariffPricing,
   getIndividualMinEmployees,
   getTariffGridPeriodPrice,
+  getTariffGridRowEmployeeCount,
+  buildTariffGridRows,
+  isTariffGridRowActive,
   showPerEmployeeDiscountBreakdown,
   TARIFF_GRID_PERIODS,
 } from '@/lib/pricing';
@@ -42,11 +45,15 @@ function TariffGridDialog({
   tariffConfig,
   periodDiscounts,
   selectedTariff,
+  employeeCount,
+  individualMin,
 }: {
   title: string;
   tariffConfig: Record<string, TariffConfig>;
   periodDiscounts: Record<number, number>;
   selectedTariff?: string;
+  employeeCount: string;
+  individualMin: number;
 }) {
   return (
     <Dialog>
@@ -64,6 +71,8 @@ function TariffGridDialog({
           tariffConfig={tariffConfig}
           periodDiscounts={periodDiscounts}
           selectedTariff={selectedTariff}
+          employeeCount={employeeCount}
+          individualMin={individualMin}
         />
       </DialogContent>
     </Dialog>
@@ -74,14 +83,17 @@ function TariffGridTable({
   tariffConfig,
   periodDiscounts,
   selectedTariff,
+  employeeCount,
+  individualMin,
 }: {
   tariffConfig: Record<string, TariffConfig>;
   periodDiscounts: Record<number, number>;
   selectedTariff?: string;
+  employeeCount: string;
+  individualMin: number;
 }) {
   const rows = useMemo(
-    () =>
-      Object.values(tariffConfig).sort((a, b) => a.minUsers - b.minUsers),
+    () => buildTariffGridRows(tariffConfig),
     [tariffConfig]
   );
 
@@ -112,29 +124,40 @@ function TariffGridTable({
           </tr>
         </thead>
         <tbody>
-          {rows.map((tariff) => {
-            const isActive = selectedTariff === tariff.key;
+          {rows.map((row) => {
+            const isActive = isTariffGridRowActive(
+              row,
+              selectedTariff,
+              employeeCount,
+              individualMin
+            );
+            const priceEmployees = getTariffGridRowEmployeeCount(
+              row,
+              employeeCount,
+              individualMin
+            );
 
             return (
               <tr
-                key={tariff.key}
+                key={row.rowKey}
                 className={cn(
                   'border-b border-border/50',
                   isActive && 'bg-primary/10'
                 )}
               >
                 <td className="py-2 px-3">
-                  <span className="font-medium">{tariff.name}</span>
+                  <span className="font-medium">{row.name}</span>
                 </td>
-                <td className="py-2 px-3 text-muted-foreground text-xs sm:text-sm">
-                  {tariff.employeesLabel.replace(/\s*сотрудников?$/i, '')}
+                <td className="py-2 px-3 text-muted-foreground text-xs sm:text-sm tabular-nums">
+                  {row.rangeLabel}
                 </td>
                 {TARIFF_GRID_PERIODS.map((period) => {
                   const amount = getTariffGridPeriodPrice(
                     tariffConfig,
                     periodDiscounts,
-                    tariff.key,
-                    period
+                    row.tariffKey,
+                    period,
+                    priceEmployees
                   );
 
                   return (
@@ -316,6 +339,8 @@ export function TariffCalculator({
                   tariffConfig={tariffConfig}
                   periodDiscounts={periodDiscounts}
                   selectedTariff={selectedTariff}
+                  employeeCount={employeeCount}
+                  individualMin={individualMin}
                 />
               </div>
             ) : (
@@ -390,6 +415,8 @@ export function TariffCalculator({
                   tariffConfig={tariffConfig}
                   periodDiscounts={periodDiscounts}
                   selectedTariff={selectedTariff}
+                  employeeCount={employeeCount}
+                  individualMin={individualMin}
                 />
               </div>
             )}
